@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Fetch historical data for GGAL
-ticker = "GGAL.BA"  # GGAL for Argentine stock market
+ticker = "GGAL"  # GGAL for Argentine stock market
 start_date = st.date_input("Select the start date", value=pd.to_datetime('2020-01-01'))
 end_date = st.date_input("Select the end date", value=pd.to_datetime('today'))
 
@@ -32,7 +32,7 @@ fig.add_trace(go.Scatter(x=data.index, y=data['21_SMA'], mode='lines', name='21 
 fig.update_layout(
     title=f"Historical Price of {ticker} with 21-day SMA",
     xaxis_title="Date",
-    yaxis_title="Price (ARS)",
+    yaxis_title="Price (USD)",
     legend_title="Legend",
     template="plotly_dark"
 )
