@@ -9,8 +9,8 @@ import numpy as np
 # Set the ticker to GGAL (ADR)
 ticker = "GGAL"  # ADR for Grupo Financiero Galicia
 
-# User input for date range
-start_date = st.date_input("Select the start date", value=pd.to_datetime('2020-01-01'))
+# User input for date range with default start date set to January 1, 2000
+start_date = st.date_input("Select the start date", value=pd.to_datetime('2000-01-01'))
 end_date = st.date_input("Select the end date", value=pd.to_datetime('today'))
 
 # Fetch historical data for GGAL
