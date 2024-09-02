@@ -52,6 +52,18 @@ fig_dispersion = go.Figure()
 # Plot the dispersion percentage
 fig_dispersion.add_trace(go.Scatter(x=data.index, y=data['Dispersion_Percent'], mode='lines', name='Dispersion %'))
 
+# Add a red horizontal line at y=0
+fig_dispersion.add_shape(
+    go.layout.Shape(
+        type="line",
+        x0=data.index.min(),
+        x1=data.index.max(),
+        y0=0,
+        y1=0,
+        line=dict(color="red", width=2)
+    )
+)
+
 # Update layout
 fig_dispersion.update_layout(
     title=f"Historical Dispersion Percentage of {ticker}",
