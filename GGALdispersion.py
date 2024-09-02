@@ -13,14 +13,23 @@ ticker = "GGAL"  # ADR for Grupo Financiero Galicia
 start_date = st.date_input("Select the start date", value=pd.to_datetime('2000-01-01'))
 end_date = st.date_input("Select the end date", value=pd.to_datetime('today'))
 
+# User input for close price type
+close_price_type = st.selectbox("Select Close Price Type", ["Unadjusted", "Adjusted"])
+
 # Fetch historical data for GGAL
 data = yf.download(ticker, start=start_date, end=end_date)
 
+# Select close price based on user input
+if close_price_type == "Adjusted":
+    price_column = 'Adj Close'
+else:
+    price_column = 'Close'
+
 # Calculate 21-day SMA
-data['21_SMA'] = data['Close'].rolling(window=21).mean()
+data['21_SMA'] = data[price_column].rolling(window=21).mean()
 
 # Calculate the dispersion (price - SMA)
-data['Dispersion'] = data['Close'] - data['21_SMA']
+data['Dispersion'] = data[price_column] - data['21_SMA']
 
 # Calculate the dispersion percentage
 data['Dispersion_Percent'] = data['Dispersion'] / data['21_SMA'] * 100
@@ -29,14 +38,14 @@ data['Dispersion_Percent'] = data['Dispersion'] / data['21_SMA'] * 100
 fig = go.Figure()
 
 # Plot the historical close price
-fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price'))
+fig.add_trace(go.Scatter(x=data.index, y=data[price_column], mode='lines', name='Close Price'))
 
 # Plot the 21-day SMA
 fig.add_trace(go.Scatter(x=data.index, y=data['21_SMA'], mode='lines', name='21 SMA'))
 
 # Update layout
 fig.update_layout(
-    title=f"Historical Price of {ticker} with 21-day SMA",
+    title=f"Historical {close_price_type} Price of {ticker} with 21-day SMA",
     xaxis_title="Date",
     yaxis_title="Price (USD)",
     legend_title="Legend",
@@ -66,7 +75,7 @@ fig_dispersion.add_shape(
 
 # Update layout
 fig_dispersion.update_layout(
-    title=f"Historical Dispersion Percentage of {ticker}",
+    title=f"Historical Dispersion Percentage of {ticker} ({close_price_type})",
     xaxis_title="Date",
     yaxis_title="Dispersion (%)",
     legend_title="Legend",
@@ -88,7 +97,7 @@ for percentile, value in zip(percentiles, percentile_values):
     plt.axvline(value, color='red', linestyle='--')
     plt.text(value, plt.ylim()[1]*0.9, f'{percentile}th', color='red')
 
-plt.title(f'Dispersion Percentage of {ticker} Close Price from 21-day SMA')
+plt.title(f'Dispersion Percentage of {ticker} ({close_price_type}) Close Price from 21-day SMA')
 plt.xlabel('Dispersion (%)')
 plt.ylabel('Frequency')
 st.pyplot(plt)
